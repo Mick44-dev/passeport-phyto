@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passeport Phyto - Extracteur de Factures</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f0d;
+            --bg-secondary: #141a17;
+            --bg-card: #1a2420;
+            --accent-green: #2dd4bf;
+            --accent-green-dim: rgba(45, 212, 191, 0.15);
+            --accent-pink: #f472b6;
+            --text-primary: #f0fdf4;
+            --text-secondary: #94a3b8;
+            --border: rgba(45, 212, 191, 0.2);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+ 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+ 
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: 1000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+ 
+        .gradient-bg {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(45, 212, 191, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(244, 114, 182, 0.05) 0%, transparent 40%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+ 
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-2%, -2%) rotate(1deg); }
+        }
+ 
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        }
+ 
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+ 
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+ 
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-pink));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+ 
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+ 
+        h1 span {
+            color: var(--accent-green);
+        }
+ 
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+ 
+        .workflow {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+ 
+        @media (max-width: 768px) {
+            .workflow {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .workflow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+ 
+        .workflow-step {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+ 
+        .workflow-step:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-2px);
+        }
+ 
+        .workflow-step.active {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 30px var(--accent-green-dim);
+        }
+ 
+        .workflow-step.completed {
+            border-color: var(--accent-green);
+            background: var(--accent-green-dim);
+        }
+ 
+        .step-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+ 
+        .step-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+ 
+        .step-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+ 
+        .workflow-arrow {
+            color: var(--accent-green);
+            font-size: 1.5rem;
+            opacity: 0.5;
+        }
+ 
+        .upload-zone {
+            background: var(--bg-card);
+            border: 2px dashed var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+ 
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--accent-green);
+            background: var(--accent-green-dim);
+        }
+ 
+        .upload-zone.has-file {
+            border-style: solid;
+            border-color: var(--accent-green);
+        }
+ 
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+ 
+        .upload-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+ 
+        .upload-hint {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+ 
+        .file-input {
+            display: none;
+        }
+ 
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            margin-top: 16px;
+        }
+ 
+        .file-info-icon {
+            font-size: 1.5rem;
+        }
+ 
+        .file-info-details {
+            flex: 1;
+            text-align: left;
+        }
+ 
+        .file-info-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+ 
+        .file-info-size {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+ 
+        .file-info-remove {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+ 
+        .file-info-remove:hover {
+            color: var(--accent-pink);
+        }
+ 
+        .uploads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+ 
+        .upload-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+ 
+        .upload-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+ 
+        .upload-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+ 
+        .upload-card-icon.pdf {
+            background: rgba(239, 68, 68, 0.15);
+        }
+ 
+        .upload-card-icon.excel {
+            background: rgba(34, 197, 94, 0.15);
+        }
+ 
+        .upload-card-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+ 
+        .upload-card-desc {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+ 
+        .extracted-data {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+ 
+        .extracted-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+ 
+        .extracted-icon {
+            font-size: 1.5rem;
+        }
+ 
+        .extracted-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+ 
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+ 
+        .data-item {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 14px;
+        }
+ 
+        .data-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+ 
+        .data-value {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+ 
+        .data-value.empty {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+ 
+        .products-section {
+            margin-top: 20px;
+        }
+ 
+        .products-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+ 
+        .products-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+ 
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+ 
+        .product-index {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            min-width: 24px;
+        }
+ 
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 32px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+ 
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-green), #14b8a6);
+            color: var(--bg-primary);
+        }
+ 
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(45, 212, 191, 0.3);
+        }
+ 
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+ 
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+ 
+        .btn-secondary:hover {
+            border-color: var(--accent-green);
+        }
+ 
+        .status-message {
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+ 
+        .status-message.success {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+ 
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+ 
+        .status-message.info {
+            background: var(--accent-green-dim);
+            color: var(--accent-green);
+            border: 1px solid var(--border);
+        }
+ 
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+ 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+ 
+        footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+ 
+        footer a {
+            color: var(--accent-green);
+            text-decoration: none;
+        }
+ 
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="gradient-bg"></div>
+ 
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🌿</div>
+                <h1>Passeport <span>Phyto</span></h1>
+            </div>
+            <p class="subtitle">Extraction automatique des factures vers le document phytosanitaire</p>
+        </header>
+ 
+        <div class="workflow">
+            <div class="workflow-step" id="step1">
+                <div class="step-number">Étape 1</div>
+                <div class="step-title">PDF Facture</div>
+                <div class="step-desc">Uploadez la facture</div>
+            </div>
+            <div class="workflow-arrow">→</div>
+            <div class="workflow-step" id="step2">
+                <div class="step-number">Étape 2</div>
+                <div class="step-title">Template Excel</div>
+                <div class="step-desc">Uploadez le modèle</div>
+            </div>
+            <div class="workflow-arrow">→</div>
+            <div class="workflow-step" id="step3">
+                <div class="step-number">Étape 3</div>
+                <div class="step-title">Générer</div>
+                <div class="step-desc">Téléchargez le résultat</div>
+            </div>
+        </div>
+ 
+        <div class="uploads-grid">
+            <div class="upload-card">
+                <div class="upload-card-header">
+                    <div class="upload-card-icon pdf">📄</div>
+                    <div>
+                        <div class="upload-card-title">Facture PDF</div>
+                        <div class="upload-card-desc">Format Fuchsia Delhommeau</div>
+                    </div>
+                </div>
+                <div class="upload-zone" id="pdfZone">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-title">Déposez le PDF ici</div>
+                    <div class="upload-hint">ou cliquez pour parcourir</div>
+                    <input type="file" class="file-input" id="pdfInput" accept=".pdf">
+                    <div class="file-info hidden" id="pdfInfo">
+                        <span class="file-info-icon">📄</span>
+                        <div class="file-info-details">
+                            <div class="file-info-name" id="pdfName"></div>
+                            <div class="file-info-size" id="pdfSize"></div>
+                        </div>
+                        <button class="file-info-remove" id="pdfRemove">✕</button>
+                    </div>
+                </div>
+            </div>
+ 
+            <div class="upload-card">
+                <div class="upload-card-header">
+                    <div class="upload-card-icon excel">📊</div>
+                    <div>
+                        <div class="upload-card-title">Template Excel</div>
+                        <div class="upload-card-desc">Passeport_Phyto_FD.xlsx</div>
+                    </div>
+                </div>
+                <div class="upload-zone" id="excelZone">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-title">Déposez le template Excel</div>
+                    <div class="upload-hint">ou cliquez pour parcourir</div>
+                    <input type="file" class="file-input" id="excelInput" accept=".xlsx,.xls">
+                    <div class="file-info hidden" id="excelInfo">
+                        <span class="file-info-icon">📊</span>
+                        <div class="file-info-details">
+                            <div class="file-info-name" id="excelName"></div>
+                            <div class="file-info-size" id="excelSize"></div>
+                        </div>
+                        <button class="file-info-remove" id="excelRemove">✕</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="extracted-data hidden" id="extractedData">
+            <div class="extracted-header">
+                <span class="extracted-icon">✨</span>
+                <span class="extracted-title">Données extraites du PDF</span>
+            </div>
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">N° Facture → B2</div>
+                    <div class="data-value" id="dataInvoice">—</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Date du jour → C2</div>
+                    <div class="data-value" id="dataDate">—</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Client → E2</div>
+                    <div class="data-value" id="dataClient">—</div>
+                </div>
+            </div>
+            <div class="products-section">
+                <div class="products-title">Produits → Colonne B (à partir de ligne 7)</div>
+                <div class="products-list" id="productsList"></div>
+            </div>
+        </div>
+ 
+        <div class="status-message hidden" id="statusMessage"></div>
+ 
+        <button class="btn btn-primary" id="generateBtn" disabled>
+            <span>🚀</span>
+            <span>Générer le Passeport Phytosanitaire</span>
+        </button>
+ 
+        <footer>
+            <p>Pépinière Fuchsia Delhommeau • <a href="https://fuchsia-delhommeau.com" target="_blank">fuchsia-delhommeau.com</a></p>
+        </footer>
+    </div>
+ 
+    <script>
+        // Configuration PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+ 
+        // État de l'application
+        let state = {
+            pdfFile: null,
+            excelFile: null,
+            extractedData: {
+                invoiceNumber: '',
+                clientName: '',
+                products: [],
+                date: new Date().toLocaleDateString('fr-FR')
+            }
+        };
+ 
+        // Éléments DOM
+        const pdfZone = document.getElementById('pdfZone');
+        const pdfInput = document.getElementById('pdfInput');
+        const pdfInfo = document.getElementById('pdfInfo');
+        const pdfName = document.getElementById('pdfName');
+        const pdfSize = document.getElementById('pdfSize');
+        const pdfRemove = document.getElementById('pdfRemove');
+ 
+        const excelZone = document.getElementById('excelZone');
+        const excelInput = document.getElementById('excelInput');
+        const excelInfo = document.getElementById('excelInfo');
+        const excelName = document.getElementById('excelName');
+        const excelSize = document.getElementById('excelSize');
+        const excelRemove = document.getElementById('excelRemove');
+ 
+        const extractedDataDiv = document.getElementById('extractedData');
+        const dataInvoice = document.getElementById('dataInvoice');
+        const dataDate = document.getElementById('dataDate');
+        const dataClient = document.getElementById('dataClient');
+        const productsList = document.getElementById('productsList');
+ 
+        const generateBtn = document.getElementById('generateBtn');
+        const statusMessage = document.getElementById('statusMessage');
+ 
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+ 
+        // Fonctions utilitaires
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' o';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
+        }
+ 
+        function showStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            statusMessage.classList.remove('hidden');
+        }
+ 
+        function hideStatus() {
+            statusMessage.classList.add('hidden');
+        }
+ 
+        function updateSteps() {
+            step1.classList.toggle('completed', state.pdfFile !== null);
+            step2.classList.toggle('completed', state.excelFile !== null);
+            step3.classList.toggle('active', state.pdfFile && state.excelFile);
+            generateBtn.disabled = !(state.pdfFile && state.excelFile);
+        }
+ 
+        function updateExtractedDataDisplay() {
+            if (state.extractedData.invoiceNumber || state.extractedData.products.length > 0) {
+                extractedDataDiv.classList.remove('hidden');
+                
+                // Numéro de facture formaté pour le BL
+                const blNumber = state.extractedData.invoiceNumber.replace('F', 'BL N°');
+                dataInvoice.textContent = blNumber || '—';
+                dataInvoice.classList.toggle('empty', !state.extractedData.invoiceNumber);
+                
+                // Date du jour
+                dataDate.textContent = `DU ${state.extractedData.date}`;
+                
+                // Client
+                dataClient.textContent = state.extractedData.clientName ? `CLIENT: ${state.extractedData.clientName}` : '—';
+                dataClient.classList.toggle('empty', !state.extractedData.clientName);
+                
+                // Produits
+                productsList.innerHTML = '';
+                state.extractedData.products.forEach((product, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'product-item';
+                    item.innerHTML = `
+                        <span class="product-index">B${7 + index}</span>
+                        <span>${product}</span>
+                    `;
+                    productsList.appendChild(item);
+                });
+            } else {
+                extractedDataDiv.classList.add('hidden');
+            }
+        }
+ 
+        // Extraction des données du PDF
+        async function extractPdfData(file) {
+            try {
+                showStatus('Lecture du PDF en cours...', 'info');
+                
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const page = await pdf.getPage(1);
+                const textContent = await page.getTextContent();
+                
+                const text = textContent.items.map(item => item.str).join(' ');
+                console.log('Texte extrait:', text);
+                
+                // Extraction du numéro de facture (format N° F2026-0006 ou F2026-0006)
+                const invoiceMatch = text.match(/N°\s*(F\d{4}-\d{4})/i) || text.match(/(F\d{4}-\d{4})/);
+                if (invoiceMatch) {
+                    state.extractedData.invoiceNumber = invoiceMatch[1];
+                }
+                
+                // Extraction du nom du client (texte en gras après le numéro, avant l'adresse)
+                // Pattern: après "N° FXXXX-XXXX" et avant une adresse (numéro + rue)
+                const clientMatch = text.match(/F\d{4}-\d{4}\s+([A-Za-zÀ-ÿ\s']+?)(?=\s+\d+\s+(?:Rue|Avenue|Boulevard|Place|Chemin|Allée|Impasse))/i);
+                if (clientMatch) {
+                    state.extractedData.clientName = clientMatch[1].trim();
+                } else {
+                    // Alternative: chercher après "le" ou "La" au début
+                    const altClientMatch = text.match(/F\d{4}-\d{4}\s+((?:le|la|les|l')\s+[A-Za-zÀ-ÿ\s']+?)(?=\s+\d)/i);
+                    if (altClientMatch) {
+                        state.extractedData.clientName = altClientMatch[1].trim();
+                    }
+                }
+                
+                // Extraction des produits depuis la colonne Description
+                // Les produits sont entre "Description" et les colonnes numériques
+                const products = [];
+                
+                // Chercher les noms de plantes (pattern typique des noms botaniques)
+                // Format: Genre espèce 'Cultivar' ou Genre espèce
+                const plantPatterns = text.matchAll(/([A-Z][a-z]+\s+[a-z]+(?:\s+'[^']+')?)(?=\s+\d+\s+[\d,]+)/g);
+                for (const match of plantPatterns) {
+                    const productName = match[1].trim();
+                    // Filtrer les faux positifs (mots courants)
+                    if (!['Sous total', 'Total remises', 'Total TTC', 'Base', 'TVA'].some(skip => productName.includes(skip))) {
+                        products.push(productName);
+                    }
+                }
+                
+                state.extractedData.products = products;
+                
+                hideStatus();
+                updateExtractedDataDisplay();
+                
+                if (!state.extractedData.invoiceNumber && products.length === 0) {
+                    showStatus('Aucune donnée extraite. Vérifiez que le PDF est bien une facture Fuchsia Delhommeau.', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erreur extraction PDF:', error);
+                showStatus('Erreur lors de la lecture du PDF: ' + error.message, 'error');
+            }
+        }
+ 
+        // Génération du fichier Excel
+        async function generateExcel() {
+            try {
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<span class="loading"></span><span>Génération en cours...</span>';
+                
+                const arrayBuffer = await state.excelFile.arrayBuffer();
+                const workbook = new ExcelJS.Workbook();
+                await workbook.xlsx.load(arrayBuffer);
+                
+                const sheet = workbook.worksheets[0];
+                
+                // B2: Numéro de facture (transformé en BL)
+                const blNumber = state.extractedData.invoiceNumber.replace('F', 'BL N°');
+                sheet.getCell('B2').value = blNumber;
+                
+                // C2: Date du jour
+                sheet.getCell('C2').value = `DU ${state.extractedData.date}`;
+                
+                // E2: Client
+                sheet.getCell('E2').value = `CLIENT: ${state.extractedData.clientName}`;
+                
+                // Colonne B à partir de ligne 7: Produits
+                // D'abord, effacer les anciennes données (lignes 7 à 100)
+                for (let row = 7; row <= 100; row++) {
+                    sheet.getCell(`B${row}`).value = null;
+                }
+                
+                // Insérer les nouveaux produits
+                state.extractedData.products.forEach((product, index) => {
+                    sheet.getCell(`B${7 + index}`).value = product;
+                });
+                
+                // Générer le fichier
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                
+                // Téléchargement
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Passeport_Phyto_${state.extractedData.invoiceNumber || 'export'}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showStatus('✅ Fichier généré avec succès !', 'success');
+                
+            } catch (error) {
+                console.error('Erreur génération Excel:', error);
+                showStatus('Erreur lors de la génération: ' + error.message, 'error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<span>🚀</span><span>Générer le Passeport Phytosanitaire</span>';
+            }
+        }
+ 
+        // Gestion des uploads PDF
+        function setupDropZone(zone, input, onFile, type) {
+            zone.addEventListener('click', (e) => {
+                if (!e.target.closest('.file-info')) {
+                    input.click();
+                }
+            });
+ 
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('dragover');
+            });
+ 
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('dragover');
+            });
+ 
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file) onFile(file);
+            });
+ 
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) onFile(file);
+            });
+        }
+ 
+        // Setup PDF zone
+        setupDropZone(pdfZone, pdfInput, async (file) => {
+            state.pdfFile = file;
+            pdfName.textContent = file.name;
+            pdfSize.textContent = formatFileSize(file.size);
+            pdfInfo.classList.remove('hidden');
+            pdfZone.classList.add('has-file');
+            pdfZone.querySelector('.upload-icon').classList.add('hidden');
+            pdfZone.querySelector('.upload-title').classList.add('hidden');
+            pdfZone.querySelector('.upload-hint').classList.add('hidden');
+            updateSteps();
+            await extractPdfData(file);
+        });
+ 
+        pdfRemove.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state.pdfFile = null;
+            state.extractedData = {
+                invoiceNumber: '',
+                clientName: '',
+                products: [],
+                date: new Date().toLocaleDateString('fr-FR')
+            };
+            pdfInput.value = '';
+            pdfInfo.classList.add('hidden');
+            pdfZone.classList.remove('has-file');
+            pdfZone.querySelector('.upload-icon').classList.remove('hidden');
+            pdfZone.querySelector('.upload-title').classList.remove('hidden');
+            pdfZone.querySelector('.upload-hint').classList.remove('hidden');
+            extractedDataDiv.classList.add('hidden');
+            updateSteps();
+            hideStatus();
+        });
+ 
+        // Setup Excel zone
+        setupDropZone(excelZone, excelInput, (file) => {
+            state.excelFile = file;
+            excelName.textContent = file.name;
+            excelSize.textContent = formatFileSize(file.size);
+            excelInfo.classList.remove('hidden');
+            excelZone.classList.add('has-file');
+            excelZone.querySelector('.upload-icon').classList.add('hidden');
+            excelZone.querySelector('.upload-title').classList.add('hidden');
+            excelZone.querySelector('.upload-hint').classList.add('hidden');
+            updateSteps();
+        });
+ 
+        excelRemove.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state.excelFile = null;
+            excelInput.value = '';
+            excelInfo.classList.add('hidden');
+            excelZone.classList.remove('has-file');
+            excelZone.querySelector('.upload-icon').classList.remove('hidden');
+            excelZone.querySelector('.upload-title').classList.remove('hidden');
+            excelZone.querySelector('.upload-hint').classList.remove('hidden');
+            updateSteps();
+        });
+ 
+        // Bouton génération
+        generateBtn.addEventListener('click', generateExcel);
+    </script>
+</body>
+</html>
+ 
