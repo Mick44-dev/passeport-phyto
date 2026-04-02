@@ -830,7 +830,21 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Passeport_Phyto_${state.extractedData.invoiceNumber || 'export'}.xlsx`;
+                
+                // Formater la date en YYYY_MM_DD
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const dateFormatted = `${year}_${month}_${day}`;
+                
+                // Nettoyer le nom du client pour le nom de fichier (enlever caractères spéciaux)
+                const clientName = state.extractedData.clientName
+                    .replace(/[^a-zA-Z0-9À-ÿ\s-]/g, '')
+                    .replace(/\s+/g, '_')
+                    .trim() || 'Client';
+                
+                a.download = `Passeport_Phyto_${clientName}_${dateFormatted}.xlsx`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -941,4 +955,3 @@
     </script>
 </body>
 </html>
- 
