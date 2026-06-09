@@ -675,20 +675,96 @@
 
                 // Effacer les anciennes données produits (lignes 7 à 200)
                 for (let row = 7; row <= 200; row++) {
-                    sheet.getCell(`B${row}`).value = null;
-                    sheet.getCell(`C${row}`).value = null;
-                    sheet.getCell(`D${row}`).value = null;
-                    sheet.getCell(`E${row}`).value = null;
+                    ['B','C','D','E'].forEach(col => {
+                        const cell = sheet.getCell(`${col}${row}`);
+                        cell.value = null;
+                        // Réinitialiser le style pour éviter des résidus de l'ancien template
+                        cell.style = {};
+                    });
                 }
 
-                // Insérer les produits avec les données phytosanitaires
+                // -----------------------------------------------------------
+                // Définition des styles à appliquer sur chaque ligne produit,
+                // copiés exactement depuis la ligne 7 du template :
+                //   - Colonne B (nom plante) : Calibri 11, italique, bordure fine, alignement gauche
+                //   - Colonne C (FR-PL03618) : Calibri 13, normal, bordure fine, centré h+v
+                //   - Colonne D (année)       : Calibri 11, normal, bordure fine, centré h
+                //   - Colonne E (FR)           : Calibri 11, normal, bordure fine, centré h
+                // -----------------------------------------------------------
+
+                // Bordure fine sur les 4 côtés (identique à la ligne 7)
+                const thinBorder = {
+                    top:    { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    left:   { style: 'thin' },
+                    right:  { style: 'thin' }
+                };
+
+                // Insérer les produits avec le bon formatage sur chaque cellule
                 state.extractedData.products.forEach((product, index) => {
                     const row = 7 + index;
-                    sheet.getCell(`B${row}`).value = product;
-                    sheet.getCell(`C${row}`).value = 'FR-PL03618';
-                    sheet.getCell(`D${row}`).value = new Date().getFullYear();
-                    sheet.getCell(`E${row}`).value = 'FR';
+
+                    // --- Colonne B : Nom de la plante ---
+                    // Italique, taille 11, Calibri, noir, bordure, alignement gauche
+                    const cellB = sheet.getCell(`B${row}`);
+                    cellB.value = product;
+                    cellB.font   = { name: 'Calibri', size: 11, italic: true, bold: false, color: { argb: 'FF000000' } };
+                    cellB.border = thinBorder;
+                    cellB.alignment = { horizontal: 'left', vertical: 'center' };
+
+                    // --- Colonne C : Numéro d'enregistrement ---
+                    // Taille 13, Calibri, noir, bordure, centré h+v
+                    const cellC = sheet.getCell(`C${row}`);
+                    cellC.value = 'FR-PL03618';
+                    cellC.font   = { name: 'Calibri', size: 13, italic: false, bold: false, color: { argb: 'FF000000' } };
+                    cellC.border = thinBorder;
+                    cellC.alignment = { horizontal: 'center', vertical: 'center' };
+
+                    // --- Colonne D : Année ---
+                    // Taille 11, Calibri, bordure, centré h
+                    const cellD = sheet.getCell(`D${row}`);
+                    cellD.value = new Date().getFullYear();
+                    cellD.font   = { name: 'Calibri', size: 11, italic: false, bold: false };
+                    cellD.border = thinBorder;
+                    cellD.alignment = { horizontal: 'center', vertical: 'center' };
+
+                    // --- Colonne E : Pays ---
+                    // Taille 11, Calibri, bordure, centré h
+                    const cellE = sheet.getCell(`E${row}`);
+                    cellE.value = 'FR';
+                    cellE.font   = { name: 'Calibri', size: 11, italic: false, bold: false };
+                    cellE.border = thinBorder;
+                    cellE.alignment = { horizontal: 'center', vertical: 'center' };
                 });
+
+                // -----------------------------------------------------------
+                // Répétition de la ligne d'en-tête (ligne 6) sur chaque page imprimée.
+                // C'est ce qu'on appelle les "lignes de titre d'impression" dans Excel.
+                // Cela signifie que quand le document dépasse une page, la ligne 6
+                // (A, B, C, D) sera automatiquement réimprimée en haut de chaque page.
+                // -----------------------------------------------------------
+                sheet.pageSetup = sheet.pageSetup || {};
+                sheet.pageSetup.printTitlesRow = '6:6';   // répéter la ligne 6
+
+                // -----------------------------------------------------------
+                // Mise en page pour impression A4 :
+                //   - Format A4 (paperSize 9)
+                //   - Portrait
+                //   - Ajustement automatique de la largeur pour tenir sur 1 page de large
+                //     (fitToWidth=1, fitToHeight=0 = pas de limite en hauteur)
+                // -----------------------------------------------------------
+                sheet.pageSetup.paperSize  = 9;           // A4
+                sheet.pageSetup.orientation = 'portrait';
+                sheet.pageSetup.fitToPage  = true;
+                sheet.pageSetup.fitToWidth = 1;           // tenir sur 1 colonne de page
+                sheet.pageSetup.fitToHeight = 0;          // pas de limite verticale
+
+                // Marges d'impression en pouces (0.7 cm ≈ 0.28 pouce)
+                sheet.pageMargins = {
+                    left: 0.28, right: 0.28,
+                    top: 0.39,  bottom: 0.39,
+                    header: 0.2, footer: 0.2
+                };
 
                 // Générer le fichier et déclencher le téléchargement
                 const buffer = await workbook.xlsx.writeBuffer();
