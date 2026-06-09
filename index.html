@@ -22,11 +22,7 @@
             --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -37,28 +33,16 @@
         }
 
         .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.03;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; opacity: 0.03; z-index: 1000;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
 
         .gradient-bg {
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(45, 212, 191, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(244, 114, 182, 0.05) 0%, transparent 40%);
-            animation: float 20s ease-in-out infinite;
-            z-index: -1;
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 20% 20%, rgba(45, 212, 191, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(244, 114, 182, 0.05) 0%, transparent 40%);
+            animation: float 20s ease-in-out infinite; z-index: -1;
         }
 
         @keyframes float {
@@ -66,446 +50,181 @@
             50% { transform: translate(-2%, -2%) rotate(1deg); }
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 24px;
-            position: relative;
-            z-index: 1;
-        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; position: relative; z-index: 1; }
 
-        header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
+        header { text-align: center; margin-bottom: 48px; }
 
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
+        .logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 
         .logo-icon {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             background: linear-gradient(135deg, var(--accent-green), var(--accent-pink));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;
         }
 
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
+        h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+        h1 span { color: var(--accent-green); }
 
-        h1 span {
-            color: var(--accent-green);
-        }
-
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            margin-top: 8px;
-        }
+        .subtitle { color: var(--text-secondary); font-size: 1rem; margin-top: 8px; }
 
         .workflow {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr auto 1fr;
-            gap: 16px;
-            align-items: center;
-            margin-bottom: 40px;
+            display: grid; grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 16px; align-items: center; margin-bottom: 40px;
         }
 
         @media (max-width: 768px) {
-            .workflow {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-            .workflow-arrow {
-                transform: rotate(90deg);
-            }
+            .workflow { grid-template-columns: 1fr; gap: 12px; }
+            .workflow-arrow { transform: rotate(90deg); }
         }
 
         .workflow-step {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s ease;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 24px; text-align: center; transition: all 0.3s ease;
         }
 
-        .workflow-step:hover {
-            border-color: var(--accent-green);
-            transform: translateY(-2px);
-        }
-
-        .workflow-step.active {
-            border-color: var(--accent-green);
-            box-shadow: 0 0 30px var(--accent-green-dim);
-        }
-
-        .workflow-step.completed {
-            border-color: var(--accent-green);
-            background: var(--accent-green-dim);
-        }
+        .workflow-step:hover { border-color: var(--accent-green); transform: translateY(-2px); }
+        .workflow-step.active { border-color: var(--accent-green); box-shadow: 0 0 30px var(--accent-green-dim); }
+        .workflow-step.completed { border-color: var(--accent-green); background: var(--accent-green-dim); }
 
         .step-number {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--accent-green);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+            font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--accent-green);
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em;
         }
 
-        .step-title {
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-
-        .step-desc {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .workflow-arrow {
-            color: var(--accent-green);
-            font-size: 1.5rem;
-            opacity: 0.5;
-        }
+        .step-title { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+        .step-desc { font-size: 0.8rem; color: var(--text-secondary); }
+        .workflow-arrow { color: var(--accent-green); font-size: 1.5rem; opacity: 0.5; }
 
         .upload-zone {
-            background: var(--bg-card);
-            border: 2px dashed var(--border);
-            border-radius: 20px;
-            padding: 48px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 24px;
+            background: var(--bg-card); border: 2px dashed var(--border);
+            border-radius: 20px; padding: 48px; text-align: center;
+            cursor: pointer; transition: all 0.3s ease; margin-bottom: 24px;
         }
 
-        .upload-zone:hover, .upload-zone.dragover {
-            border-color: var(--accent-green);
-            background: var(--accent-green-dim);
-        }
+        .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent-green); background: var(--accent-green-dim); }
+        .upload-zone.has-file { border-style: solid; border-color: var(--accent-green); }
 
-        .upload-zone.has-file {
-            border-style: solid;
-            border-color: var(--accent-green);
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-        }
-
-        .upload-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .upload-hint {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        .file-input {
-            display: none;
-        }
+        .upload-icon { font-size: 3rem; margin-bottom: 16px; }
+        .upload-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+        .upload-hint { color: var(--text-secondary); font-size: 0.875rem; }
+        .file-input { display: none; }
 
         .file-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            margin-top: 16px;
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; background: var(--bg-secondary); border-radius: 10px; margin-top: 16px;
         }
 
-        .file-info-icon {
-            font-size: 1.5rem;
-        }
-
-        .file-info-details {
-            flex: 1;
-            text-align: left;
-        }
-
-        .file-info-name {
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .file-info-size {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
+        .file-info-icon { font-size: 1.5rem; }
+        .file-info-details { flex: 1; text-align: left; }
+        .file-info-name { font-weight: 500; font-size: 0.9rem; }
+        .file-info-size { color: var(--text-secondary); font-size: 0.8rem; }
 
         .file-info-remove {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1.2rem;
-            padding: 4px;
-            transition: color 0.2s;
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; font-size: 1.2rem; padding: 4px; transition: color 0.2s;
         }
 
-        .file-info-remove:hover {
-            color: var(--accent-pink);
-        }
+        .file-info-remove:hover { color: var(--accent-pink); }
 
         .uploads-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px; margin-bottom: 32px;
         }
 
-        .upload-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-        }
+        .upload-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
 
-        .upload-card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
+        .upload-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 
         .upload-card-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
         }
 
-        .upload-card-icon.pdf {
-            background: rgba(239, 68, 68, 0.15);
-        }
-
-        .upload-card-icon.excel {
-            background: rgba(34, 197, 94, 0.15);
-        }
-
-        .upload-card-title {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .upload-card-desc {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
+        .upload-card-icon.pdf { background: rgba(239, 68, 68, 0.15); }
+        .upload-card-icon.excel { background: rgba(34, 197, 94, 0.15); }
+        .upload-card-title { font-weight: 600; font-size: 1rem; }
+        .upload-card-desc { color: var(--text-secondary); font-size: 0.8rem; }
 
         .extracted-data {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 32px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 24px; margin-bottom: 32px;
         }
 
         .extracted-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
         }
 
-        .extracted-icon {
-            font-size: 1.5rem;
-        }
+        .extracted-icon { font-size: 1.5rem; }
+        .extracted-title { font-weight: 600; font-size: 1.1rem; }
 
-        .extracted-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
 
-        .data-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .data-item {
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            padding: 14px;
-        }
+        .data-item { background: var(--bg-secondary); border-radius: 10px; padding: 14px; }
 
         .data-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--accent-green);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 6px;
+            font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--accent-green);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;
         }
 
-        .data-value {
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
+        .data-value { font-weight: 500; font-size: 0.95rem; }
+        .data-value.empty { color: var(--text-secondary); font-style: italic; }
 
-        .data-value.empty {
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        .products-section {
-            margin-top: 20px;
-        }
+        .products-section { margin-top: 20px; }
 
         .products-title {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--accent-green);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 12px;
+            font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--accent-green);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
         }
 
-        .products-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .products-list { display: flex; flex-direction: column; gap: 8px; }
 
         .product-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            font-size: 0.9rem;
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; background: var(--bg-secondary); border-radius: 8px; font-size: 0.9rem;
         }
 
-        .product-index {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            min-width: 24px;
-        }
+        .product-index { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); min-width: 24px; }
 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 32px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 10px; padding: 16px 32px; font-family: 'DM Sans', sans-serif;
+            font-size: 1rem; font-weight: 600; border: none; border-radius: 12px;
+            cursor: pointer; transition: all 0.3s ease; width: 100%;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-green), #14b8a6);
-            color: var(--bg-primary);
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-green), #14b8a6); color: var(--bg-primary); }
 
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(45, 212, 191, 0.3);
-        }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(45, 212, 191, 0.3); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-green);
-        }
+        .btn-secondary { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); }
+        .btn-secondary:hover { border-color: var(--accent-green); }
 
         .status-message {
-            text-align: center;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            font-size: 0.9rem;
+            text-align: center; padding: 16px; border-radius: 12px;
+            margin-bottom: 24px; font-size: 0.9rem;
         }
 
-        .status-message.success {
-            background: rgba(34, 197, 94, 0.15);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-
-        .status-message.error {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .status-message.info {
-            background: var(--accent-green-dim);
-            color: var(--accent-green);
-            border: 1px solid var(--border);
-        }
+        .status-message.success { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-message.error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .status-message.info { background: var(--accent-green-dim); color: var(--accent-green); border: 1px solid var(--border); }
 
         .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid transparent;
-            border-top-color: currentColor;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            display: inline-block; width: 20px; height: 20px;
+            border: 2px solid transparent; border-top-color: currentColor;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         footer {
-            text-align: center;
-            margin-top: 48px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-size: 0.8rem;
+            text-align: center; margin-top: 48px; padding-top: 24px;
+            border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem;
         }
 
-        footer a {
-            color: var(--accent-green);
-            text-decoration: none;
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        footer a { color: var(--accent-green); text-decoration: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -672,7 +391,6 @@
         const step2 = document.getElementById('step2');
         const step3 = document.getElementById('step3');
 
-        // Fonctions utilitaires
         function formatFileSize(bytes) {
             if (bytes < 1024) return bytes + ' o';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
@@ -699,20 +417,16 @@
         function updateExtractedDataDisplay() {
             if (state.extractedData.invoiceNumber || state.extractedData.products.length > 0) {
                 extractedDataDiv.classList.remove('hidden');
-                
-                // Numéro de facture formaté pour le BL
+
                 const blNumber = state.extractedData.invoiceNumber.replace('F', 'BL N°');
                 dataInvoice.textContent = blNumber || '—';
                 dataInvoice.classList.toggle('empty', !state.extractedData.invoiceNumber);
-                
-                // Date du jour
+
                 dataDate.textContent = `DU ${state.extractedData.date}`;
-                
-                // Client
+
                 dataClient.textContent = state.extractedData.clientName ? `CLIENT: ${state.extractedData.clientName}` : '—';
                 dataClient.classList.toggle('empty', !state.extractedData.clientName);
-                
-                // Produits
+
                 productsList.innerHTML = '';
                 state.extractedData.products.forEach((product, index) => {
                     const item = document.createElement('div');
@@ -728,116 +442,212 @@
             }
         }
 
-        // Extraction des données du PDF
+        // ============================================================
+        // EXTRACTION PDF - VERSION CORRIGÉE
+        // Corrections apportées :
+        //   1. Lecture de TOUTES les pages (et non plus seulement la page 1)
+        //   2. Reconstruction des lignes par position Y (chaque ligne du tableau
+        //      est un groupe de mots alignés sur la même hauteur)
+        //   3. Détection des produits : la première colonne du tableau contient
+        //      le nom de la plante (en gras dans le PDF, mais ici on se base sur
+        //      la structure : nom suivi de "Godet de…" ou "Pot de…" sur la ligne
+        //      suivante), puis quantité (entier), prix HT (décimal avec virgule),
+        //      taux TVA, montant HT.
+        //   4. Filtrage des lignes parasites (en-tête, pied de page, totaux…).
+        // ============================================================
         async function extractPdfData(file) {
             try {
-                showStatus('Lecture du PDF en cours...', 'info');
-                
+                showStatus('Lecture du PDF en cours…', 'info');
+
                 const arrayBuffer = await file.arrayBuffer();
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                const page = await pdf.getPage(1);
-                const textContent = await page.getTextContent();
-                
-                const text = textContent.items.map(item => item.str).join(' ');
-                console.log('Texte extrait:', text);
-                
-                // Extraction du numéro de facture (format N° F2026-0006 ou F2026-0006)
-                const invoiceMatch = text.match(/N°\s*(F\d{4}-\d{4})/i) || text.match(/(F\d{4}-\d{4})/);
-                if (invoiceMatch) {
-                    state.extractedData.invoiceNumber = invoiceMatch[1];
+
+                // --- Étape 1 : collecter tous les items texte de toutes les pages ---
+                // Chaque item PDF a une position (x, y) et un texte.
+                // On regroupe les items par "ligne" (même position Y à ±3 px près).
+
+                const allItems = [];
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+
+                    // On normalise la hauteur de page pour que toutes les pages
+                    // aient le même référentiel de coordonnées Y (haut = grand Y).
+                    const viewport = page.getViewport({ scale: 1 });
+                    const pageHeight = viewport.height;
+
+                    textContent.items.forEach(item => {
+                        if (item.str.trim() === '') return; // ignorer les espaces vides
+                        allItems.push({
+                            // x : position horizontale (colonne)
+                            x: Math.round(item.transform[4]),
+                            // y : on convertit en "y depuis le haut de la page" + offset pour séparer les pages
+                            y: Math.round(pageHeight - item.transform[5]) + (pageNum - 1) * 10000,
+                            text: item.str.trim(),
+                            page: pageNum
+                        });
+                    });
                 }
-                
-                // Extraction du nom du client (texte en gras après le numéro, avant l'adresse)
-                // Pattern: après "N° FXXXX-XXXX" et avant une adresse (numéro + rue)
-                const clientMatch = text.match(/F\d{4}-\d{4}\s+([A-Za-zÀ-ÿ\s']+?)(?=\s+\d+\s+(?:Rue|Avenue|Boulevard|Place|Chemin|Allée|Impasse))/i);
-                if (clientMatch) {
-                    state.extractedData.clientName = clientMatch[1].trim();
-                } else {
-                    // Alternative: chercher après "le" ou "La" au début
-                    const altClientMatch = text.match(/F\d{4}-\d{4}\s+((?:le|la|les|l')\s+[A-Za-zÀ-ÿ\s']+?)(?=\s+\d)/i);
-                    if (altClientMatch) {
-                        state.extractedData.clientName = altClientMatch[1].trim();
+
+                // --- Étape 2 : regrouper en lignes (même Y à ±4 px) ---
+                allItems.sort((a, b) => a.y - b.y || a.x - b.x);
+
+                const lines = [];
+                let currentLine = [];
+                let currentY = null;
+
+                for (const item of allItems) {
+                    if (currentY === null || Math.abs(item.y - currentY) <= 4) {
+                        currentLine.push(item);
+                        currentY = item.y;
+                    } else {
+                        if (currentLine.length > 0) lines.push(currentLine);
+                        currentLine = [item];
+                        currentY = item.y;
                     }
                 }
-                
-                // Extraction des produits depuis la colonne Description
-                // Stratégie: chercher le texte entre "Description" et "Total HT" ou "Sous-total"
+                if (currentLine.length > 0) lines.push(currentLine);
+
+                // --- Étape 3 : extraire numéro de facture, client et produits ---
+
+                let invoiceNumber = '';
+                let clientName = '';
                 const products = [];
-                
-                // Méthode 1: Chercher les lignes de produits (nom suivi de quantité et prix)
-                // Pattern: texte alphanumérique (avec espaces, apostrophes, tirets) suivi de nombre(s)
-                // Gère les noms en minuscules, majuscules, ou mixtes
-                // Format attendu: "nom du produit    quantité    prix € ..."
-                
-                // Pattern amélioré pour capturer les noms de plantes (minuscules ou majuscules)
-                // Cherche: mot(s) suivi(s) éventuellement de 'Cultivar', puis quantité et prix
-                const productPatterns = text.matchAll(/([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s\-']+?(?:\s+'[^']+')?)(?=\s+\d+\s+\d+[,\.]\d+\s*€)/g);
-                
-                for (const match of productPatterns) {
-                    let productName = match[1].trim();
-                    
-                    // Filtrer les faux positifs (mots-clés de la facture)
-                    const skipWords = [
-                        'Description', 'Qté', 'Prix', 'unitaire', 'TVA', 'Montant',
-                        'Sous', 'Total', 'Base', 'Remise', 'TTC', 'HT',
-                        'Siret', 'France', 'Rue', 'Avenue', 'Boulevard', 'Place',
-                        'attention', 'Escompte', 'Pénalité', 'Règlement', 'virement',
-                        'IBAN', 'BIC', 'page', 'Facture', 'SCEA', 'Planche', 'Coex'
-                    ];
-                    
-                    const isSkipWord = skipWords.some(skip => 
-                        productName.toLowerCase().includes(skip.toLowerCase()) ||
-                        productName.length < 3
-                    );
-                    
-                    if (!isSkipWord && productName.length >= 3) {
-                        // Nettoyer les espaces multiples
-                        productName = productName.replace(/\s+/g, ' ').trim();
-                        
-                        // Éviter les doublons
-                        if (!products.includes(productName)) {
-                            products.push(productName);
+
+                // Mots-clés qui indiquent une ligne à ignorer (en-têtes, totaux, mentions légales…)
+                const SKIP_PATTERNS = [
+                    /^(Description|Qté|Prix|unitaire|TVA|Montant|HT|TTC)$/i,
+                    /^(Sous-total|Total|Base|Remise|Escompte|Pénalité|Règlement|Virement)$/i,
+                    /^(IBAN|BIC|Siret|page\s+\d|France|Facture|Devis|Objet|attention|SCEA|tél|e-mail|www\.)$/i,
+                    /^(L'Étang|La\s+Planche|Houplines|Hameau|Fresnel)$/i,
+                    /^\d{1,3}\/\d{1,3}$/, // "1 / 4"
+                    /^[\d\s€%,\.]+$/, // lignes purement numériques
+                ];
+
+                function shouldSkip(text) {
+                    return SKIP_PATTERNS.some(p => p.test(text));
+                }
+
+                // Format du contenant : "Godet de X cm" ou "Pot de XL/YL"
+                const CONTAINER_PATTERN = /^(Godet|Pot)\s+de\s+/i;
+
+                // Prix HT : nombre décimal avec virgule ou point, suivi de €
+                // Ex : "2,93 €" ou "4,87 €" ou "80,00 €"
+                const PRICE_PATTERN = /^\d+[,\.]\d+\s*€$/;
+
+                // Quantité : entier seul (ex: "24", "10", "48")
+                const QTY_PATTERN = /^\d+$/;
+
+                // Taux TVA : "10,0%" ou "20,0%"
+                const TVA_PATTERN = /^\d+[,\.]\d+%$/;
+
+                // --- Recherche du numéro de facture ---
+                // Format : "N° F2026-0023" ou juste "F2026-0023"
+                for (const line of lines) {
+                    const lineText = line.map(i => i.text).join(' ');
+                    const m = lineText.match(/N°\s*(F\d{4}-\d{4})/) || lineText.match(/(F\d{4}-\d{4})/);
+                    if (m) { invoiceNumber = m[1]; break; }
+                }
+
+                // --- Recherche du nom du client ---
+                // Le client apparaît en gras juste après "N° F2026-xxxx" dans le PDF.
+                // Dans le texte extrait par PDF.js, il apparaît généralement comme
+                // une ligne à part contenant un nom propre (majuscules, espaces).
+                // Stratégie : la ligne qui suit immédiatement le numéro de facture
+                // et qui n'est pas une adresse (pas de chiffres au début) est le client.
+                let foundInvoiceLine = false;
+                for (const line of lines) {
+                    const lineText = line.map(i => i.text).join(' ').trim();
+                    if (!foundInvoiceLine) {
+                        if (lineText.includes(invoiceNumber)) {
+                            foundInvoiceLine = true;
                         }
+                        continue;
+                    }
+                    // Ignorer les lignes vides ou purement numériques
+                    if (lineText === '' || /^\d/.test(lineText)) continue;
+                    // Ignorer les lignes d'adresse (contiennent un code postal ou "Siret")
+                    if (/\d{5}/.test(lineText) || /siret/i.test(lineText) || /tva/i.test(lineText)) continue;
+                    // Ignorer les lignes qui ressemblent à des rues
+                    if (/\b(rue|avenue|boulevard|place|chemin|hameau|allée|impasse)\b/i.test(lineText)) continue;
+                    // Première ligne de texte "propre" après le numéro = nom du client
+                    clientName = lineText;
+                    break;
+                }
+
+                // --- Recherche des produits ---
+                // Dans la facture Fuchsia Delhommeau, chaque produit occupe 2 lignes :
+                //   Ligne A : NomDuProduit   Quantité   PrixHT   TauxTVA   MontantHT
+                //   Ligne B : "Godet de X cm" ou "Pot de XL/YL"
+                //
+                // La stratégie est de repérer les lignes de type "Ligne A" :
+                //   - commence par du texte (nom de plante)
+                //   - contient au moins une quantité (entier) ET un prix (décimal €)
+                //
+                // Puis de reconstituer le nom complet en fusionnant les cellules
+                // texte de cette ligne (avant la colonne "Quantité").
+
+                // Pour chaque ligne, on identifie la position X de la colonne "Quantité"
+                // grâce à la présence d'un entier isolé > 0 et < 9999 suivi d'un prix.
+
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    const texts = line.map(item => item.text);
+                    const fullLineText = texts.join(' ');
+
+                    // On cherche une ligne qui a : au moins un QTY + un PRICE
+                    const hasQty = texts.some(t => QTY_PATTERN.test(t) && parseInt(t) > 0 && parseInt(t) < 9999);
+                    const hasPrice = texts.some(t => PRICE_PATTERN.test(t));
+
+                    if (!hasQty || !hasPrice) continue;
+
+                    // Ignorer les lignes "Transport" (ligne de frais de port)
+                    if (/transport/i.test(fullLineText)) continue;
+
+                    // Trouver l'index du premier token qui est une quantité
+                    const qtyIndex = texts.findIndex(t => QTY_PATTERN.test(t) && parseInt(t) > 0 && parseInt(t) < 9999);
+                    if (qtyIndex <= 0) continue; // pas de texte avant la quantité = pas un produit
+
+                    // Le nom du produit = tous les tokens AVANT la quantité
+                    const nameParts = texts.slice(0, qtyIndex);
+
+                    // Filtrer les tokens parasites dans le nom
+                    const cleanParts = nameParts.filter(t => !shouldSkip(t));
+                    const productName = cleanParts.join(' ').trim();
+
+                    // Vérifications de sécurité
+                    if (productName.length < 3) continue;
+                    if (/^\d/.test(productName)) continue; // commence par un chiffre
+                    if (shouldSkip(productName)) continue;
+
+                    // Éviter les doublons
+                    if (!products.includes(productName)) {
+                        products.push(productName);
                     }
                 }
-                
-                // Si aucun produit trouvé avec la méthode 1, essayer méthode alternative
-                if (products.length === 0) {
-                    // Méthode 2: chercher entre "Description" et "Total" ou "Sous-total"
-                    const descMatch = text.match(/Description[^]*?(?=\s+(?:Sous-total|Total\s+HT))/i);
-                    if (descMatch) {
-                        const descSection = descMatch[0];
-                        // Extraire les lignes qui ressemblent à des produits
-                        const lines = descSection.split(/\s{2,}|\n/);
-                        for (const line of lines) {
-                            const cleanLine = line.trim();
-                            // Un produit est probablement un texte sans chiffres au début
-                            if (cleanLine.length > 3 && 
-                                /^[A-Za-zÀ-ÿ]/.test(cleanLine) && 
-                                !cleanLine.match(/^(Description|Qté|Prix|TVA|Montant|\d)/i)) {
-                                // Enlever les chiffres et symboles à la fin (quantités, prix)
-                                const productName = cleanLine.replace(/\s+\d+.*$/, '').trim();
-                                if (productName.length > 3 && !products.includes(productName)) {
-                                    products.push(productName);
-                                }
-                            }
-                        }
-                    }
-                }
-                
+
+                // Sauvegarder dans l'état
+                state.extractedData.invoiceNumber = invoiceNumber;
+                state.extractedData.clientName = clientName;
                 state.extractedData.products = products;
-                console.log('Produits extraits:', products);
-                
+
+                console.log('N° Facture :', invoiceNumber);
+                console.log('Client :', clientName);
+                console.log('Produits (' + products.length + ') :', products);
+
                 hideStatus();
                 updateExtractedDataDisplay();
-                
-                if (!state.extractedData.invoiceNumber && products.length === 0) {
+
+                if (!invoiceNumber && products.length === 0) {
                     showStatus('Aucune donnée extraite. Vérifiez que le PDF est bien une facture Fuchsia Delhommeau.', 'error');
+                } else if (products.length === 0) {
+                    showStatus('Numéro de facture trouvé, mais aucun produit détecté. Vérifiez le format de la facture.', 'error');
                 }
-                
+
             } catch (error) {
                 console.error('Erreur extraction PDF:', error);
-                showStatus('Erreur lors de la lecture du PDF: ' + error.message, 'error');
+                showStatus('Erreur lors de la lecture du PDF : ' + error.message, 'error');
             }
         }
 
@@ -845,97 +655,82 @@
         async function generateExcel() {
             try {
                 generateBtn.disabled = true;
-                generateBtn.innerHTML = '<span class="loading"></span><span>Génération en cours...</span>';
-                
+                generateBtn.innerHTML = '<span class="loading"></span><span>Génération en cours…</span>';
+
                 const arrayBuffer = await state.excelFile.arrayBuffer();
                 const workbook = new ExcelJS.Workbook();
                 await workbook.xlsx.load(arrayBuffer);
-                
+
                 const sheet = workbook.worksheets[0];
-                
-                // B2: Numéro de facture (transformé en BL)
+
+                // B2 : Numéro de facture transformé en BL
                 const blNumber = state.extractedData.invoiceNumber.replace('F', 'BL N°');
                 sheet.getCell('B2').value = blNumber;
-                
-                // C2: Date du jour
+
+                // C2 : Date du jour
                 sheet.getCell('C2').value = `DU ${state.extractedData.date}`;
-                
-                // E2: Client
+
+                // E2 : Nom du client
                 sheet.getCell('E2').value = `CLIENT: ${state.extractedData.clientName}`;
-                
-                // Colonne B à partir de ligne 7: Produits
-                // D'abord, effacer les anciennes données (lignes 7 à 100, colonnes B à E)
-                for (let row = 7; row <= 100; row++) {
+
+                // Effacer les anciennes données produits (lignes 7 à 200)
+                for (let row = 7; row <= 200; row++) {
                     sheet.getCell(`B${row}`).value = null;
                     sheet.getCell(`C${row}`).value = null;
                     sheet.getCell(`D${row}`).value = null;
                     sheet.getCell(`E${row}`).value = null;
                 }
-                
-                // Insérer les nouveaux produits avec les données phytosanitaires
+
+                // Insérer les produits avec les données phytosanitaires
                 state.extractedData.products.forEach((product, index) => {
                     const row = 7 + index;
                     sheet.getCell(`B${row}`).value = product;
-                    sheet.getCell(`C${row}`).value = 'FR-PL03618';  // Numéro d'enregistrement
-                    sheet.getCell(`D${row}`).value = new Date().getFullYear();  // Année
-                    sheet.getCell(`E${row}`).value = 'FR';  // Pays
+                    sheet.getCell(`C${row}`).value = 'FR-PL03618';
+                    sheet.getCell(`D${row}`).value = new Date().getFullYear();
+                    sheet.getCell(`E${row}`).value = 'FR';
                 });
-                
-                // Générer le fichier
+
+                // Générer le fichier et déclencher le téléchargement
                 const buffer = await workbook.xlsx.writeBuffer();
                 const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                
-                // Téléchargement
+
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                
-                // Formater la date en YYYY_MM_DD
+
                 const now = new Date();
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const dateFormatted = `${year}_${month}_${day}`;
-                
-                // Nettoyer le nom du client pour le nom de fichier (enlever caractères spéciaux)
-                const clientName = state.extractedData.clientName
+                const dateFormatted = `${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}_${String(now.getDate()).padStart(2, '0')}`;
+                const clientSlug = state.extractedData.clientName
                     .replace(/[^a-zA-Z0-9À-ÿ\s-]/g, '')
                     .replace(/\s+/g, '_')
                     .trim() || 'Client';
-                
-                a.download = `Passeport_Phyto_${clientName}_${dateFormatted}.xlsx`;
+
+                a.download = `Passeport_Phyto_${clientSlug}_${dateFormatted}.xlsx`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                
+
                 showStatus('✅ Fichier généré avec succès !', 'success');
-                
+
             } catch (error) {
                 console.error('Erreur génération Excel:', error);
-                showStatus('Erreur lors de la génération: ' + error.message, 'error');
+                showStatus('Erreur lors de la génération : ' + error.message, 'error');
             } finally {
                 generateBtn.disabled = false;
                 generateBtn.innerHTML = '<span>🚀</span><span>Générer le Passeport Phytosanitaire</span>';
             }
         }
 
-        // Gestion des uploads PDF
-        function setupDropZone(zone, input, onFile, type) {
+        // --- Gestion des zones de dépôt (drag & drop + clic) ---
+
+        function setupDropZone(zone, input, onFile) {
             zone.addEventListener('click', (e) => {
-                if (!e.target.closest('.file-info')) {
-                    input.click();
-                }
+                if (!e.target.closest('.file-info')) input.click();
             });
 
-            zone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                zone.classList.add('dragover');
-            });
-
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('dragover');
-            });
+            zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+            zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
 
             zone.addEventListener('drop', (e) => {
                 e.preventDefault();
@@ -950,16 +745,29 @@
             });
         }
 
-        // Setup PDF zone
+        function showFileInfo(zone, info, nameEl, sizeEl, file) {
+            nameEl.textContent = file.name;
+            sizeEl.textContent = formatFileSize(file.size);
+            info.classList.remove('hidden');
+            zone.classList.add('has-file');
+            zone.querySelector('.upload-icon').classList.add('hidden');
+            zone.querySelector('.upload-title').classList.add('hidden');
+            zone.querySelector('.upload-hint').classList.add('hidden');
+        }
+
+        function clearFileInfo(zone, info, nameEl, sizeEl, input) {
+            input.value = '';
+            info.classList.add('hidden');
+            zone.classList.remove('has-file');
+            zone.querySelector('.upload-icon').classList.remove('hidden');
+            zone.querySelector('.upload-title').classList.remove('hidden');
+            zone.querySelector('.upload-hint').classList.remove('hidden');
+        }
+
+        // Zone PDF
         setupDropZone(pdfZone, pdfInput, async (file) => {
             state.pdfFile = file;
-            pdfName.textContent = file.name;
-            pdfSize.textContent = formatFileSize(file.size);
-            pdfInfo.classList.remove('hidden');
-            pdfZone.classList.add('has-file');
-            pdfZone.querySelector('.upload-icon').classList.add('hidden');
-            pdfZone.querySelector('.upload-title').classList.add('hidden');
-            pdfZone.querySelector('.upload-hint').classList.add('hidden');
+            showFileInfo(pdfZone, pdfInfo, pdfName, pdfSize, file);
             updateSteps();
             await extractPdfData(file);
         });
@@ -967,45 +775,24 @@
         pdfRemove.addEventListener('click', (e) => {
             e.stopPropagation();
             state.pdfFile = null;
-            state.extractedData = {
-                invoiceNumber: '',
-                clientName: '',
-                products: [],
-                date: new Date().toLocaleDateString('fr-FR')
-            };
-            pdfInput.value = '';
-            pdfInfo.classList.add('hidden');
-            pdfZone.classList.remove('has-file');
-            pdfZone.querySelector('.upload-icon').classList.remove('hidden');
-            pdfZone.querySelector('.upload-title').classList.remove('hidden');
-            pdfZone.querySelector('.upload-hint').classList.remove('hidden');
+            state.extractedData = { invoiceNumber: '', clientName: '', products: [], date: new Date().toLocaleDateString('fr-FR') };
+            clearFileInfo(pdfZone, pdfInfo, pdfName, pdfSize, pdfInput);
             extractedDataDiv.classList.add('hidden');
             updateSteps();
             hideStatus();
         });
 
-        // Setup Excel zone
+        // Zone Excel
         setupDropZone(excelZone, excelInput, (file) => {
             state.excelFile = file;
-            excelName.textContent = file.name;
-            excelSize.textContent = formatFileSize(file.size);
-            excelInfo.classList.remove('hidden');
-            excelZone.classList.add('has-file');
-            excelZone.querySelector('.upload-icon').classList.add('hidden');
-            excelZone.querySelector('.upload-title').classList.add('hidden');
-            excelZone.querySelector('.upload-hint').classList.add('hidden');
+            showFileInfo(excelZone, excelInfo, excelName, excelSize, file);
             updateSteps();
         });
 
         excelRemove.addEventListener('click', (e) => {
             e.stopPropagation();
             state.excelFile = null;
-            excelInput.value = '';
-            excelInfo.classList.add('hidden');
-            excelZone.classList.remove('has-file');
-            excelZone.querySelector('.upload-icon').classList.remove('hidden');
-            excelZone.querySelector('.upload-title').classList.remove('hidden');
-            excelZone.querySelector('.upload-hint').classList.remove('hidden');
+            clearFileInfo(excelZone, excelInfo, excelName, excelSize, excelInput);
             updateSteps();
         });
 
