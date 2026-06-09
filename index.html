@@ -330,8 +330,10 @@
                 </div>
             </div>
             <div class="products-section">
-                <div class="products-title">Produits → Colonne B (à partir de ligne 7)</div>
-                <div class="products-list" id="productsList"></div>
+                <div class="data-item" style="margin-top: 4px;">
+                    <div class="data-label">Nombre de produits détectés</div>
+                    <div class="data-value" id="productsCount">—</div>
+                </div>
             </div>
         </div>
 
@@ -382,7 +384,7 @@
         const dataInvoice = document.getElementById('dataInvoice');
         const dataDate = document.getElementById('dataDate');
         const dataClient = document.getElementById('dataClient');
-        const productsList = document.getElementById('productsList');
+        const productsCount = document.getElementById('productsCount');
 
         const generateBtn = document.getElementById('generateBtn');
         const statusMessage = document.getElementById('statusMessage');
@@ -427,16 +429,10 @@
                 dataClient.textContent = state.extractedData.clientName ? `CLIENT: ${state.extractedData.clientName}` : '—';
                 dataClient.classList.toggle('empty', !state.extractedData.clientName);
 
-                productsList.innerHTML = '';
-                state.extractedData.products.forEach((product, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'product-item';
-                    item.innerHTML = `
-                        <span class="product-index">B${7 + index}</span>
-                        <span>${product}</span>
-                    `;
-                    productsList.appendChild(item);
-                });
+                // Affiche uniquement le nombre total de produits détectés
+                const n = state.extractedData.products.length;
+                productsCount.textContent = n > 0 ? `${n} ligne${n > 1 ? 's' : ''} détectée${n > 1 ? 's' : ''}` : '—';
+                productsCount.classList.toggle('empty', n === 0);
             } else {
                 extractedDataDiv.classList.add('hidden');
             }
@@ -744,7 +740,7 @@
                 // (A, B, C, D) sera automatiquement réimprimée en haut de chaque page.
                 // -----------------------------------------------------------
                 sheet.pageSetup = sheet.pageSetup || {};
-                sheet.pageSetup.printTitlesRow = '6:6';   // répéter la ligne 6
+                sheet.pageSetup.printTitlesRow = '1:6';   // répéter les lignes 1 à 6
 
                 // -----------------------------------------------------------
                 // Mise en page pour impression A4 :
